@@ -1,7 +1,7 @@
 ## Introduction
 Example exercise for a back-end banking service. 
-Uses REST API, PostgreSQL, RabbitMQ, Java, Spring Framework, Flyway, Testcontainers, RestAssured, Log4j2,
-Docker, Lombok, Mapstruct, MyBatis (although I would've preferred Hibernate).
+Uses REST API, PostgreSQL, RabbitMQ, Java 17, Spring Framework, Gradle, Flyway, JUnit, Testcontainers, RestAssured, 
+Log4j2, Docker, Lombok, Mapstruct, MyBatis (although I would've preferred Hibernate).
 
 ## REST endpoints
 * ``GET /accounts/{id}``
@@ -27,6 +27,8 @@ Docker, Lombok, Mapstruct, MyBatis (although I would've preferred Hibernate).
 * A unique sessionId is generated for each request, used in logs and returned with error response for better debugging.
 * log4j2 was used instead of logback as the logger implementation, just because of personal preference. 
   Otherwise, the code uses SLF4J as an abstraction layer.
+* Flyway is used for database schema migrations since it enables schema versioning and it's a mature and easy-to-use tool.
+* Database write queries are done in transactions to enable rollbacks in case a problem appears after an update or insert.
 
 ### Estimate on how many transactions can your account application can handle per second on your development machine
 * ~31 transactions per second when sending transactions for one specific account (tested with Apache JMeter).
@@ -39,7 +41,7 @@ Docker, Lombok, Mapstruct, MyBatis (although I would've preferred Hibernate).
 * Load balancer must be added to provide a common address and distribute traffic between all the cluster nodes.
 * Another option would be to split the service into separate microservices when the project gets too large.
 * It's also possible to scale the database horizontally with a master node and 1..n slave nodes.
-  Read-only queries should then be directed to the slaves and write queries should be directed to the master.
+  Read-only transactions should then be directed to the slaves and read-write transactions should be directed to the master.
 * RabbitMQ cluster should be set up.
 * With multiple instances the application logs will be scattered. 
   It may require a log management solution (e.g., ELK Stack) to enhance log analysis.

@@ -50,6 +50,22 @@ class AccountIntegrationTest extends IntegrationTestBase {
                 .body("sessionId", notNullValue());
     }
 
+    @Test
+    @Sql(statements = "ALTER TABLE account RENAME COLUMN id TO id2;",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(statements = "ALTER TABLE account RENAME COLUMN id2 TO id;",
+            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void getAccount_databaseError_returnsServerError() {
+        given()
+                .get("/accounts/{id}", ACCOUNT_ID)
+                .then()
+                .log().ifValidationFails()
+                .statusCode(500)
+                .body("code", is("SERVER_ERROR"))
+                .body("message", notNullValue())
+                .body("sessionId", notNullValue());
+    }
+
 
     @Test
     @Sql(scripts = {"/db/account/truncate-account.sql", "/db/balance/truncate-balance.sql"},

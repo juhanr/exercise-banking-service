@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 class CountryServiceTest {
 
     private static final String COUNTRY_ISO_CODE = "EST";
+    private static final String COUNTRY_NAME = "Estonia";
 
     @Mock private CountryRepository repository;
     private CountryService service;
@@ -36,11 +37,13 @@ class CountryServiceTest {
 
         var actual = service.getEntityByIsoCode(COUNTRY_ISO_CODE);
 
-        assertThat(actual).isEqualTo(entity);
+        assertThat(actual).isEqualTo(entity)
+                .extracting("isoCode", "name")
+                .containsExactly(COUNTRY_ISO_CODE, COUNTRY_NAME);
     }
 
     @Test
-    void getEntityByIsoCode_validIsoCode_throwsNotFound() {
+    void getEntityByIsoCode_invalidIsoCode_throwsNotFound() {
         when(repository.findByIsoCode(COUNTRY_ISO_CODE)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getEntityByIsoCode(COUNTRY_ISO_CODE))
@@ -52,6 +55,7 @@ class CountryServiceTest {
     private CountryEntity mockEntity() {
         return CountryEntity.builder()
                 .isoCode(COUNTRY_ISO_CODE)
+                .name(COUNTRY_NAME)
                 .build();
     }
 

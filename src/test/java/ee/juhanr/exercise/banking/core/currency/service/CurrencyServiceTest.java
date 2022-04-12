@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 class CurrencyServiceTest {
 
     private static final String CURRENCY_ISO_CODE = "EUR";
+    private static final String CURRENCY_NAME = "Euro";
 
     @Mock private CurrencyRepository repository;
     private CurrencyService service;
@@ -36,11 +37,13 @@ class CurrencyServiceTest {
 
         var actual = service.getEntityByIsoCode(CURRENCY_ISO_CODE);
 
-        assertThat(actual).isEqualTo(entity);
+        assertThat(actual).isEqualTo(entity)
+                .extracting("isoCode", "name")
+                .containsExactly(CURRENCY_ISO_CODE, CURRENCY_NAME);
     }
 
     @Test
-    void getEntityByIsoCode_validIsoCode_throwsNotFound() {
+    void getEntityByIsoCode_invalidIsoCode_throwsNotFound() {
         when(repository.findByIsoCode(CURRENCY_ISO_CODE)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getEntityByIsoCode(CURRENCY_ISO_CODE))
@@ -52,6 +55,7 @@ class CurrencyServiceTest {
     private CurrencyEntity mockEntity() {
         return CurrencyEntity.builder()
                 .isoCode(CURRENCY_ISO_CODE)
+                .name(CURRENCY_NAME)
                 .build();
     }
 

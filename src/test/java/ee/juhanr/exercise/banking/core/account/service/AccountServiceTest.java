@@ -65,7 +65,9 @@ class AccountServiceTest {
 
         var actual = service.createAccount(request);
 
-        assertThat(actual).isEqualTo(response);
+        assertThat(actual).isEqualTo(response)
+                .extracting("id", "customerId", "balances")
+                .containsExactly(ACCOUNT_ID, CUSTOMER_ID, response.getBalances());
         verify(mapper).toEntity(request);
         verify(mapper).toResponse(entity, List.of(balanceEntity));
         verifyNoMoreInteractions(mapper);
@@ -106,7 +108,9 @@ class AccountServiceTest {
 
         var actual = service.getEntityById(ACCOUNT_ID);
 
-        assertThat(actual).isEqualTo(entity);
+        assertThat(actual).isEqualTo(entity)
+                .extracting("id", "customerId", "countryIsoCode")
+                .containsExactly(ACCOUNT_ID, CUSTOMER_ID, COUNTRY);
     }
 
     @Test
@@ -130,7 +134,9 @@ class AccountServiceTest {
 
         var actual = service.getResponseById(ACCOUNT_ID);
 
-        assertThat(actual).isEqualTo(response);
+        assertThat(actual).isEqualTo(response)
+                .extracting("id", "customerId", "balances")
+                .containsExactly(ACCOUNT_ID, CUSTOMER_ID, response.getBalances());
     }
 
     @Test

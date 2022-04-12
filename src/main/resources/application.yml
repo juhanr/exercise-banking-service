@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: banking-service
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    clean-disabled: true
+    group: true
+    locations: classpath:/db/migrations
+    schemas: public
+  security:
+    user:
+      name: user
+      password: password
+
+service:
+  rabbitmq:
+    exchange:
+      name: banking-service-exchange
+    queue:
+      name:
+        account: banking.account
+        balance: banking.balance
+        transaction: banking.transaction
+    routing:
+      key:
+        account: account
+        balance: balance
+        transaction: transaction
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /status
+      exposure:
+        include: health,info

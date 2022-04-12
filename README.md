@@ -3,15 +3,19 @@ Example exercise for a back-end banking service.
 Uses REST API, PostgreSQL, RabbitMQ, Java 17, Spring Framework, Gradle, Flyway, JUnit, Testcontainers, RestAssured, 
 Log4j2, Docker, Lombok, Mapstruct, MyBatis (although I would've preferred Hibernate).
 
-## REST endpoints
-* ``GET /accounts/{id}``
-* ``POST /accounts``
-* ``GET /transactions?accountId={id}``
-* ``POST /transactions``
-
 ## Build and run
 * ``gradlew build``
 * ``docker-compose up``
+
+## REST endpoints
+* Add user: ``POST /accounts``
+  * ``curl -u user:password -X POST http://localhost:8080/accounts -H 'Content-Type: application/json' -d '{"customerId": 1, "countryIsoCode": "EST", "currencies": ["EUR", "USD"]}'``
+* Get user by ID: ``GET /accounts/{id}``
+  * ``curl -u user:password -X GET http://localhost:8080/accounts/1``
+* Add transaction: ``POST /transactions``
+  * ``curl -u user:password -X POST http://localhost:8080/accounts -H 'Content-Type: application/json' -d '{"accountId": 1, "amount": 100, "currencyIsoCode": "EUR", "direction": "IN"}'``
+* Get transactions for account: ``GET /transactions?accountId={id}``
+  * ``curl -u user:password -X GET http://localhost:8080/transactions?accountId=1``
 
 ## Answers
 
